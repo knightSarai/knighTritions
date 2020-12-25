@@ -1,5 +1,4 @@
 import {firestore, convertCollectionsSnapshotToMap} from '../../firebase/firebase.util';
-import collection from '../../pages/collection';
 import {
     FETCH_COLLECTIONS_SUCCESS, 
     FETCH_COLLECTIONS_START, 
@@ -22,14 +21,14 @@ export const updateCollectionsFailure = message => ({
 
 export const updateCollectionsAsync = () => dispatch => {
     const collectionRef = firestore.collection('collections');
-    dispatch(updateCollectionsStart);
+    dispatch(updateCollectionsStart());
     collectionRef
         .get()
         .then(snapshot => {
             const collectionMap = convertCollectionsSnapshotToMap(snapshot);
-            updateCollectionsSuccess(collectionMap);
+            dispatch(updateCollectionsSuccess(collectionMap));
         })
-        .catch(err => updateCollectionsFailure(err.message))
+        .catch(err => dispatch(updateCollectionsFailure(err.message)));
 }
 
 /**
