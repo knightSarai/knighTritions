@@ -19,17 +19,6 @@ export const updateCollectionsFailure = message => ({
     payload: message
 });
 
-export const updateCollectionsAsync = () => dispatch => {
-    const collectionRef = firestore.collection('collections');
-    dispatch(updateCollectionsStart());
-    collectionRef
-        .get()
-        .then(snapshot => {
-            const collectionMap = convertCollectionsSnapshotToMap(snapshot);
-            dispatch(updateCollectionsSuccess(collectionMap));
-        })
-        .catch(err => dispatch(updateCollectionsFailure(err.message)));
-}
 
 /**
     * We can use Promise pased instead of Observable patterns:
