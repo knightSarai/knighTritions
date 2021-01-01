@@ -1,4 +1,4 @@
-import {takeEvery, call, put} from 'redux-saga/effects';
+import {takeLatest, call, put} from 'redux-saga/effects';
 import {firestore, convertCollectionsSnapshotToMap} from '../../firebase/firebase.util';
 import {
     FETCH_COLLECTIONS_START, 
@@ -10,6 +10,7 @@ function* fetchCollectionsAsync() {
         const collectionRef = firestore.collection('collections');
         const snapshot = yield collectionRef.get();
         const collectionMap = yield call(convertCollectionsSnapshotToMap, snapshot);
+        //put is the equivelant of dispatch
         yield put(updateCollectionsSuccess(collectionMap));
     } catch(err) {
         yield put(updateCollectionsFailure(err.message));
@@ -18,7 +19,7 @@ function* fetchCollectionsAsync() {
 }
 
 export function* fetchCollectionStart() {
-    yield takeEvery(
+    yield takeLatest(
         FETCH_COLLECTIONS_START,
         fetchCollectionsAsync
     )
