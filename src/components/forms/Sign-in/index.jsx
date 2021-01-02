@@ -1,9 +1,12 @@
 import React from 'react';
-import {withRouter} from 'react-router-dom'
+import {withRouter} from 'react-router-dom';
+import {connect} from 'react-redux';
 import {auth, signInWithGoogle} from '../../../firebase/firebase.util';
+import {googleSignInStart} from '../../../redux/user/user.action';
 import Input from '../Form-input'
 import SignIn from './sign-in.styles';
-import Button from '../Form-button'
+import Button from '../Form-button';
+
 class SignInForm extends React.Component{
     state = {
         email: '',
@@ -30,6 +33,8 @@ class SignInForm extends React.Component{
         
     }
     render () {
+        const {googleSignInStart} = this.props;
+
         return (
             <SignIn >
                 <h1>I Already Have An Account</h1>
@@ -39,7 +44,13 @@ class SignInForm extends React.Component{
                     <Input label="Password" type="password" name="password" value={this.state.password} required onChange={this.handleChange}/>
                     <div className="buttons">
                         <Button type="submit">Sign in</Button>
-                        <Button onClick={signInWithGoogle} isGoogleSignIn>Sign in with Google</Button>
+                        <Button 
+                            type="button" 
+                            onClick={googleSignInStart} 
+                            isGoogleSignIn
+                        >
+                                Sign in with Google
+                        </Button>
                     </div>
                 </form>
             </SignIn>
@@ -48,4 +59,4 @@ class SignInForm extends React.Component{
 
 }
 
-export default withRouter(SignInForm)
+export default connect(null, {googleSignInStart})(withRouter(SignInForm));
