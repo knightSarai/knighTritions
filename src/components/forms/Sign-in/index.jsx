@@ -1,8 +1,7 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {auth, signInWithGoogle} from '../../../firebase/firebase.util';
-import {googleSignInStart} from '../../../redux/user/user.action';
+import {googleSignInStart, emailSignInStart} from '../../../redux/user/user.action';
 import Input from '../Form-input'
 import SignIn from './sign-in.styles';
 import Button from '../Form-button';
@@ -22,14 +21,9 @@ class SignInForm extends React.Component{
 
     handleSubmit = async evt => {
         evt.preventDefault();
+        const {emailSignInStart} =  this.props;
         const {email, password} = this.state;
-        try {
-            await auth.signInWithEmailAndPassword(email, password);
-            this.setState({email: "", password: ""})
-            this.props.history.push('/')
-        } catch (err) {
-            console.error(err);
-        }
+        emailSignInStart({email, password});
         
     }
     render () {
@@ -59,4 +53,4 @@ class SignInForm extends React.Component{
 
 }
 
-export default connect(null, {googleSignInStart})(withRouter(SignInForm));
+export default connect(null, {googleSignInStart, emailSignInStart})(withRouter(SignInForm));
