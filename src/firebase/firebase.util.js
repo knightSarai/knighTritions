@@ -13,6 +13,16 @@ const config = {
     measurementId: "G-5TG3D170FX"
 };
 
+firebase.initializeApp(config);
+
+export const auth = firebase.auth();
+export const firestore = firebase.firestore();
+
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({prompt: 'select_account'});
+
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
+
 export const createUserProfileDocument = async (userAuth, args) => {
     if (!userAuth) return;
     const userRef = await firestore.doc(`users/${userAuth.uid}`);
@@ -30,6 +40,17 @@ export const createUserProfileDocument = async (userAuth, args) => {
     }
     return userRef;
 }
+
+export const getCurrentUser = () => (
+    new Promise ((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged(userAuth => {
+            unsubscribe();
+            resolve(userAuth);
+        }, reject)
+    }) 
+);
+
+/* Shop Collection Utile Functions */
 
 export const addCollectionItems = async (collectionKey, objectsToAdd) => {
     /** To Add to firebase: 
@@ -63,14 +84,5 @@ export const convertCollectionsSnapshotToMap = collections => {
         return acc; 
     },{})
 }
-
-firebase.initializeApp(config)
-
-export const auth = firebase.auth();
-export const firestore = firebase.firestore();
-
-export const googleProvider = new firebase.auth.GoogleAuthProvider();
-googleProvider.setCustomParameters({prompt: 'select_account'});
-export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 export default firebase;

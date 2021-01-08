@@ -3,6 +3,7 @@ import {Switch, Route, Redirect} from 'react-router-dom';
 /* REDUX */
 import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
+import {checkUserSession} from './redux/user/user.action';
 import {selectCurrentUser} from './redux/user/user.selector';
 /* UTIL*/
 import ScrollToTop from './util/ScrollToTop';
@@ -21,6 +22,10 @@ import {theme} from './styles/theme';
 import './App.css';
 
 class App extends React.Component{
+  componentDidMount () {
+    const {checkUserSession} = this.props;
+    checkUserSession();
+  }
   render () {
     const {currentUser} = this.props;
     return (
@@ -46,4 +51,4 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
 });
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, {checkUserSession})(App);
