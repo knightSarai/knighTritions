@@ -12,11 +12,9 @@ import {
 
 export function* getSnapShotFromUserAuth(userAuth) {
     try {
-        console.log("getSnapShotFromUserAuth");
         const userRef = yield call(createUserProfileDocument, userAuth);
         const userSnapShot = yield userRef.get();
         yield put(signInSuccess({id: userSnapShot.id, ...userSnapShot.data()}));
-
     } catch (err) {
         yield put(signInFailure(err));
     }
