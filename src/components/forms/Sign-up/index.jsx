@@ -1,8 +1,9 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {SignUpStart} from '../../../redux/user/user.action';
 import Input from '../Form-input';
 import Button from '../Form-button';
-import {auth, createUserProfileDocument } from '../../../firebase/firebase.util';
 import SignUp from './sign-up.styles';
 
 class SignUpForm extends React.Component {
@@ -16,25 +17,13 @@ class SignUpForm extends React.Component {
     
     handleSubmit = async evt => {
         evt.preventDefault();
+        const {SignUpStart} = this.props;
         const {displayName, email, password, confirmPassword} = this.state;
         if(password !== confirmPassword) {
             alert('password don\'t match');
             return
         }
-        try {
-            const {user} = await auth.createUserWithEmailAndPassword(email, password);
-            await createUserProfileDocument(user, {displayName})
-            this.setState({
-                displayName: '',
-                email: '',
-                password: '',
-                confirmPassword: ''
-            });
-            this.props.history.push('/')
-        } catch (err) {
-            console.error(err);
-        }
-        
+        SignUpStart({email, password, displayName})  
     }
 
     handleChange =  evt => {
@@ -94,4 +83,4 @@ class SignUpForm extends React.Component {
     
 }
 
-export default withRouter(SignUpForm);
+export default connect(null, {SignUpStart})(withRouter(SignUpForm));
