@@ -1,4 +1,3 @@
-import {firestore, convertCollectionsSnapshotToMap} from '../../firebase/firebase.util';
 import {
     FETCH_COLLECTIONS_SUCCESS, 
     FETCH_COLLECTIONS_START, 

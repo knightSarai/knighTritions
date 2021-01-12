@@ -1,21 +1,23 @@
 import React, {useRef} from 'react';
 import  {Link} from 'react-router-dom';
+// Redux
 import {connect} from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import {cartHiddenSelector} from '../../redux/cart/cart.selector';
-import {selectCurrentUser} from '../../redux/user/user.selector'
-import { useOnClickOutside } from '../../hooks/useOnClickOutSide';
+import {selectCurrentUser} from '../../redux/user/user.selector';
+import {SignOutStart} from '../../redux/user/user.action';
+// Custom Hooks
 import useToggleState from '../../hooks/useToggleState';
-
+import { useOnClickOutside } from '../../hooks/useOnClickOutSide';
+// Component
 import Burger from './Burger';
 import SideBar from './SideBar/';
 import Cart from '../cart';
 import CartDropdown from '../cart/dropdown';
 import Backdrop from './backdrop/backdrop'
 import {Appbar, AppbarList, AppBarItems, AppBarItem, Logo} from './AppBar.styles';
-import { auth } from '../../firebase/firebase.util';
 
-function AppBar({currentUser, hidden}) {
+function AppBar({currentUser, hidden, SignOutStart}) {
     const [sideBarOpen, toggleSideBar] = useToggleState();
     const node  = useRef();
     useOnClickOutside(sideBarOpen, node, () => toggleSideBar(false));
@@ -42,7 +44,7 @@ function AppBar({currentUser, hidden}) {
                     {
                         currentUser? 
                         <AppBarItem>
-                            <Link to="/" onClick={()=> auth.signOut()}>Sign Out</Link>
+                            <Link to="/" onClick={SignOutStart}>Sign Out</Link>
                         </AppBarItem>
                         : 
                         <AppBarItem>
@@ -67,4 +69,4 @@ const mapStateToProps = createStructuredSelector({
     hidden: cartHiddenSelector
 });
 
-export default connect(mapStateToProps)(AppBar)
+export default connect(mapStateToProps, {SignOutStart})(AppBar)

@@ -1,11 +1,9 @@
 import React from 'react';
 import {Switch, Route, Redirect} from 'react-router-dom';
-/* FIREBASE */
-import {auth, createUserProfileDocument} from './firebase/firebase.util';
 /* REDUX */
 import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
-import {setCurrentUser} from './redux/user/user.action';
+import {checkUserSession} from './redux/user/user.action';
 import {selectCurrentUser} from './redux/user/user.selector';
 /* UTIL*/
 import ScrollToTop from './util/ScrollToTop';
@@ -24,29 +22,9 @@ import {theme} from './styles/theme';
 import './App.css';
 
 class App extends React.Component{
-  
-  unsubscribeFromAuth = null;
-
-  componentDidMount() {
-    const {setCurrentUser} = this.props
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      if(userAuth) {
-        const userRef = await createUserProfileDocument(userAuth).catch(err => console.log(err));
-        userRef.onSnapshot(snapshot => {
-          setCurrentUser({
-            id: snapshot.id,
-            ...snapshot.data()
-          })
-        })
-      }else {
-        setCurrentUser(userAuth)
-      }
-      
-    })
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
+  componentDidMount () {
+    const {checkUserSession} = this.props;
+    checkUserSession();
   }
   render () {
     const {currentUser} = this.props;
@@ -73,4 +51,4 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
 });
 
-export default connect(mapStateToProps, {setCurrentUser})(App);
+export default connect(mapStateToProps, {checkUserSession})(App);
