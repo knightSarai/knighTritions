@@ -1,10 +1,10 @@
-import React from 'react';
-import {Switch, Route, Redirect} from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
 /* REDUX */
-import {connect} from 'react-redux';
-import {createStructuredSelector} from 'reselect';
-import {checkUserSession} from './redux/user/user.action';
-import {selectCurrentUser} from './redux/user/user.selector';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { checkUserSession } from './redux/user/user.action';
+import { selectCurrentUser } from './redux/user/user.selector';
 /* UTIL*/
 import ScrollToTop from './util/ScrollToTop';
 /*COMPONENTS */
@@ -16,39 +16,36 @@ import Shop from './pages/shop';
 import Sign from './pages/sign';
 import CheckoutCart from './pages/checkoutCart';
 /* STYLES */
-import {ThemeProvider} from 'styled-components';
-import {GlobalStyles} from './styles/global';
-import {theme} from './styles/theme';
+import { ThemeProvider } from 'styled-components';
+import { GlobalStyles } from './styles/global';
+import { theme } from './styles/theme';
 import './App.css';
 
-class App extends React.Component{
-  componentDidMount () {
-    const {checkUserSession} = this.props;
+const App = ({ checkUserSession, currentUser }) => {
+
+  useEffect(() => {
     checkUserSession();
-  }
-  render () {
-    const {currentUser} = this.props;
-    return (
-      <ThemeProvider theme={theme}>
-        <GlobalStyles/>
-        <AppBar/>
-        <ScrollToTop/>
-        <Switch>
-          <Route  path="/" exact component={Homepage}/>
-          <Route  path="/shop"  component={Shop}/>
-          <Route path="/checkout" exact component={CheckoutCart}/>
-          <Route  path="/sign" exact render={() => currentUser? <Redirect to="/"/> : <Sign/>}/>
-          <Route render={() => <h1>Not found!</h1>} />
-        </Switch>
-        <Footer/>
-      </ThemeProvider>
-    );
-  }
- 
+  }, [checkUserSession]);
+
+  return (
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      <AppBar />
+      <ScrollToTop />
+      <Switch>
+        <Route path="/" exact component={Homepage} />
+        <Route path="/shop" component={Shop} />
+        <Route path="/checkout" exact component={CheckoutCart} />
+        <Route path="/sign" exact render={() => currentUser ? <Redirect to="/" /> : <Sign />} />
+        <Route render={() => <h1>Not found!</h1>} />
+      </Switch>
+      <Footer />
+    </ThemeProvider>
+  );
 }
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
 });
 
-export default connect(mapStateToProps, {checkUserSession})(App);
+export default connect(mapStateToProps, { checkUserSession })(App);
